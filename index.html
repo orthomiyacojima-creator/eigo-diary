@@ -140,6 +140,19 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
   @keyframes pop { 0%{transform:scale(0.85);opacity:0} 70%{transform:scale(1.04)} 100%{transform:scale(1);opacity:1} }
   .pop { animation: pop 0.3s ease forwards; }
+  .bank-card { background:linear-gradient(135deg,#2d3436,#636e72); border-radius:var(--radius); padding:16px; margin-bottom:10px; color:white; }
+  .bank-title { font-family:'Nunito',sans-serif; font-size:13px; font-weight:700; opacity:0.8; margin-bottom:8px; }
+  .bank-amount { font-family:'Nunito',sans-serif; font-size:32px; font-weight:900; margin-bottom:4px; }
+  .bank-interest { font-size:11px; opacity:0.75; margin-bottom:12px; }
+  .bank-btn-row { display:flex; gap:8px; }
+  .bank-btn { flex:1; padding:10px; border:none; border-radius:var(--radius-sm); font-family:'Nunito',sans-serif; font-size:13px; font-weight:800; cursor:pointer; }
+  .bank-btn-save { background:#00b894; color:white; }
+  .bank-btn-get { background:#fdcb6e; color:#7d5a00; }
+  .weekly-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; margin-bottom:10px; }
+  .weekly-title { font-size:12px; font-weight:700; color:var(--muted); margin-bottom:10px; }
+  .weekly-amount { font-family:'Nunito',sans-serif; font-size:26px; font-weight:900; color:var(--purple); margin-bottom:4px; }
+  .weekly-sub { font-size:11px; color:var(--muted); margin-bottom:12px; }
+  .interest-badge { display:inline-block; background:var(--purple-pale); color:var(--purple); border-radius:99px; padding:3px 10px; font-size:11px; font-weight:700; font-family:'Nunito',sans-serif; margin-bottom:10px; }
   @keyframes boss-in { 0%{transform:scale(0) rotate(-10deg);opacity:0} 60%{transform:scale(1.1) rotate(3deg)} 100%{transform:scale(1) rotate(0deg);opacity:1} }
   @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
   @keyframes correct-flash { 0%{background:var(--purple-pale)} 50%{background:#d4fce8} 100%{background:var(--purple-pale)} }
@@ -344,6 +357,27 @@
       <div style="font-size:14px;">名前：<span id="profile-name" style="font-weight:700;color:var(--purple);"></span></div>
       <div style="font-size:13px;color:var(--muted);margin-top:8px;">🪙 1コイン＝1円でお小遣いに変換！</div>
     </div>
+    <!-- 貯金・お小遣い管理 -->
+    <div class="settings-card">
+      <div class="settings-card-title">🏦 貯金箱・お小遣い管理</div>
+      <div class="bank-card">
+        <div class="bank-title">🏦 貯金箱</div>
+        <div class="bank-amount">¥<span id="bank-amount">0</span></div>
+        <div class="bank-interest" id="bank-interest-info">利子 Lv.1 → 週1%</div>
+      </div>
+      <div class="weekly-card">
+        <div class="weekly-title">今週の獲得コイン</div>
+        <div class="weekly-amount">¥<span id="weekly-amount">0</span></div>
+        <div class="weekly-sub" id="weekly-reset-info">⚠️ 日曜日までに貯金かもらうを選んでね！消えちゃうよ！</div>
+        <div class="interest-badge" id="interest-badge">Lv.1 利子 週1%</div>
+        <div class="bank-btn-row">
+          <button class="bank-btn bank-btn-save" onclick="saveToBank()">🏦 貯金する</button>
+          <button class="bank-btn bank-btn-get" onclick="requestAllowance()">💰 もらう</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;">レベルが上がるほど利子が増えるよ！</div>
+    </div>
+
     <div class="settings-card" style="background:#fff8f8;border-color:#ffd0d0;">
       <div class="settings-card-title" style="color:#c0392b;">🗑️ データをリセット</div>
       <button onclick="resetData()" style="background:#e74c3c;color:white;border:none;border-radius:var(--radius-sm);padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;">リセットする</button>
@@ -490,6 +524,8 @@ function initMain() {
   updateStats();
   renderDiaryHistory();
   saveData();
+  checkWeeklyInterest();
+  updateBankUI();
 }
 
 function updateGradeUI() {
@@ -533,6 +569,7 @@ function switchTab(name, btn) {
   if (name === 'quiz') startQuiz();
   if (name === 'words') renderWordbook('all');
   if (name === 'stats') renderStats();
+  if (name === 'settings') updateBankUI();
 }
 
 // 日記変換
@@ -712,7 +749,7 @@ function saveDiary() {
 
   const d = new Date();
   userData.diaries.unshift({ date:`${d.getMonth()+1}月${d.getDate()}日`, text, words: lastConverted.map(w=>w.en) });
-  userData.coins += 20; userData.diaryCount++;
+  userData.coins += 20; userData.weeklyCoins = (userData.weeklyCoins||0) + 20; userData.diaryCount++;
 
   updateStats();
   renderDiaryHistory();
@@ -839,7 +876,7 @@ function showResult() {
   document.getElementById('result-msg').textContent = ['もう一度！','いい調子！','あと少し！','すごい！','パーフェクト！🎊'][Math.min(quizCorrect,4)];
   const reward = perfect ? 50 : quizCorrect * 8;
   document.getElementById('coin-reward').textContent = `🪙 +${reward}コイン ゲット！`;
-  userData.coins += reward;
+  userData.coins += reward; userData.weeklyCoins = (userData.weeklyCoins||0) + reward;
   updateStats();
   saveData();
   // 10問正解でボス戦へ
@@ -1031,7 +1068,7 @@ function checkBossAnswer() {
 function endBoss() {
   var perfect = bossCorrect === bossWords.length;
   var reward = perfect ? 80 : bossCorrect * 20;
-  userData.coins += reward;
+  userData.coins += reward; userData.weeklyCoins = (userData.weeklyCoins||0) + reward;
   updateStats();
   saveData();
   document.getElementById('boss-screen').style.display = 'none';
@@ -1208,6 +1245,106 @@ function speak(word) {
   window.speechSynthesis.speak(u);
 }
 window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+
+// 利子率テーブル（レベル別）
+var INTEREST_RATES = { 1:1, 2:2, 3:3, 4:5, 5:8, 6:10 };
+
+function getInterestRate() {
+  return INTEREST_RATES[userData.level] || 1;
+}
+
+function updateBankUI() {
+  var bank = userData.bankAmount || 0;
+  var weekly = userData.weeklyCoins || 0;
+  var rate = getInterestRate();
+  var el_bank = document.getElementById('bank-amount');
+  var el_weekly = document.getElementById('weekly-amount');
+  var el_info = document.getElementById('bank-interest-info');
+  var el_badge = document.getElementById('interest-badge');
+  if (el_bank) el_bank.textContent = bank;
+  if (el_weekly) el_weekly.textContent = weekly;
+  if (el_info) el_info.textContent = '利子 Lv.' + userData.level + ' → 週' + rate + '%　貯金中の利子：+' + Math.floor(bank * rate / 100) + '円/週';
+  if (el_badge) el_badge.textContent = 'Lv.' + userData.level + ' 利子 週' + rate + '%';
+}
+
+function saveToBank() {
+  var weekly = userData.weeklyCoins || 0;
+  if (weekly <= 0) { showToast('今週のコインがまだないよ！'); return; }
+  userData.bankAmount = (userData.bankAmount || 0) + weekly;
+  userData.weeklyCoins = 0;
+  saveData();
+  updateBankUI();
+  showToast('🏦 ' + weekly + '円を貯金したよ！');
+}
+
+function requestAllowance() {
+  var weekly = userData.weeklyCoins || 0;
+  var bank = userData.bankAmount || 0;
+  if (weekly <= 0 && bank <= 0) { showToast('もらえるコインがまだないよ！'); return; }
+  var total = weekly;
+  var msg = buildReport();
+  userData.weeklyCoins = 0;
+  saveData();
+  updateBankUI();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(msg).then(function() {
+      showToast('📋 コピーしたよ！LINEに貼り付けてね');
+    }).catch(function() { fallbackCopy(msg); });
+  } else {
+    fallbackCopy(msg);
+  }
+}
+
+// 毎週日曜日に利子を自動付与
+function checkWeeklyInterest() {
+  var now = new Date();
+  var lastCheck = userData.lastInterestDate || '';
+  var thisWeek = now.getFullYear() + '-W' + getWeekNumber(now);
+  var lastSatAlert = userData.lastSatAlert || '';
+  var todayStr = now.getFullYear() + '-' + (now.getMonth()+1) + '-' + now.getDate();
+
+  // 土曜日アラート（1日1回）
+  if (now.getDay() === 6 && lastSatAlert !== todayStr && (userData.weeklyCoins || 0) > 0) {
+    userData.lastSatAlert = todayStr;
+    saveData();
+    var satMsg = '⚠️ 明日が締め切り！' + '\n\n' + '今週の獲得：' + (userData.weeklyCoins||0) + '円' + '\n\n' + '設定タブから「貯金する」か「もらう」を選んでね！' + '\n' + '選ばないと消えちゃうよ😱';
+    setTimeout(function(){ alert(satMsg); }, 1000);
+  }
+
+  // 日曜日アラート（締め切り当日）
+  if (now.getDay() === 0 && (userData.weeklyCoins || 0) > 0 && lastCheck !== thisWeek) {
+    var sunMsg = '🚨 今日が締め切り！' + '\n\n' + '今週の獲得：' + (userData.weeklyCoins||0) + '円' + '\n\n' + '今すぐ設定タブから選んでね！' + '\n' + 'このまま放置すると今夜消えるよ💸';
+    setTimeout(function(){ alert(sunMsg); }, 800);
+  }
+
+  if (lastCheck !== thisWeek && now.getDay() === 0) {
+    // 今週のコインをリセット（もらうか貯金しなかった分は消える）
+    var lost = userData.weeklyCoins || 0;
+    if (lost > 0) {
+      userData.weeklyCoins = 0;
+      setTimeout(function(){ showToast('⚠️ 今週の' + lost + '円が消えたよ！来週は貯金かもらうを忘れずに！'); }, 500);
+    }
+    // 貯金箱に利子をつける
+    var bank = userData.bankAmount || 0;
+    if (bank > 0) {
+      var rate = getInterestRate();
+      var interest = Math.floor(bank * rate / 100);
+      userData.bankAmount += interest;
+      if (interest > 0) setTimeout(function(){ showToast('📈 貯金に利子 +' + interest + '円ついたよ！'); }, 2000);
+    }
+    userData.lastInterestDate = thisWeek;
+    saveData();
+    updateBankUI();
+  }
+}
+
+function getWeekNumber(d) {
+  var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  var dayNum = date.getUTCDay() || 7;
+  date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+  var yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
+  return Math.ceil((((date - yearStart) / 86400000) + 1)/7);
+}
 
 function shuffle(a) { return [...a].sort(()=>Math.random()-0.5); }
 
