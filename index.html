@@ -209,7 +209,7 @@
       </div>
     </div>
     <div class="stats-row">
-      <div class="stat-box"><div class="stat-num" id="coin-display">0</div><div class="stat-label">🪙 コイン</div></div>
+      <div class="stat-box"><div class="stat-num" id="coin-display">0</div><div class="stat-label">🪙 コイン＝円</div></div>
       <div class="stat-box"><div class="stat-num" id="word-count">0</div><div class="stat-label">📚 単語数</div></div>
       <div class="stat-box"><div class="stat-num" id="diary-count">0</div><div class="stat-label">📝 日記数</div></div>
     </div>
@@ -253,7 +253,7 @@
     <button class="btn-primary" onclick="saveDiary()">📔 日記を保存してポイントゲット！</button>
     <button class="btn-line" onclick="sendToLine()">
       <svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.105.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-      親にLINEで送る 📊
+      📋 親へのレポートをコピー
     </button>
     <div class="section-title">過去の日記</div>
     <div id="diary-history"></div>
@@ -301,11 +301,11 @@
       <div class="result-emoji" id="result-emoji">🎉</div>
       <div class="result-score" id="result-score">-</div>
       <div class="result-msg" id="result-msg"></div>
-      <div class="coin-reward" id="coin-reward">🪙 +0コイン</div>
+      <div class="coin-reward" id="coin-reward">🪙 +0円</div>
       <button class="btn-primary" onclick="startQuiz()">もう一回やる 🔄</button>
       <button class="btn-line" style="margin-top:7px;" onclick="sendToLine()">
         <svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.105.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-        この結果を親に送る 📊
+        📋 親へのレポートをコピー
       </button>
     </div>
   </div>
@@ -340,6 +340,7 @@
     <div class="settings-card">
       <div class="settings-card-title">👤 プロフィール</div>
       <div style="font-size:14px;">名前：<span id="profile-name" style="font-weight:700;color:var(--purple);"></span></div>
+      <div style="font-size:13px;color:var(--muted);margin-top:8px;">🪙 1コイン＝1円でお小遣いに変換！</div>
     </div>
     <div class="settings-card" style="background:#fff8f8;border-color:#ffd0d0;">
       <div class="settings-card-title" style="color:#c0392b;">🗑️ データをリセット</div>
@@ -713,7 +714,7 @@ function saveDiary() {
 
   updateStats();
   renderDiaryHistory();
-  showToast('🎉 +20コイン！日記を保存したよ！');
+  showToast('🎉 +20円ゲット！日記を保存したよ！');
   saveData();
   document.getElementById('diary-input').value = '';
   document.getElementById('convert-area').style.display = 'none';
@@ -793,6 +794,13 @@ function answerQuiz(btn, correct) {
       }
     }
     userData.totalCorrect = (userData.totalCorrect||0)+1;
+    // 今日のテスト単語を記録
+    if (!userData.todayQuiz) userData.todayQuiz = {words:[], correct:0, total:0, date:''};
+    var today2 = new Date(); var todayStr = (today2.getMonth()+1)+'/'+today2.getDate();
+    if (userData.todayQuiz.date !== todayStr) userData.todayQuiz = {words:[], correct:0, total:0, date:todayStr};
+    if (!userData.todayQuiz.words.includes(currentWord.en)) userData.todayQuiz.words.push(currentWord.en);
+    userData.todayQuiz.correct++;
+    userData.todayQuiz.total++;
   } else {
     btn.classList.add('wrong');
     document.querySelectorAll('.quiz-choice').forEach(b=>{if(b.textContent===correct)b.classList.add('correct');});
@@ -800,6 +808,12 @@ function answerQuiz(btn, correct) {
     setTimeout(function(){ speak(currentWord.en); }, 300);
     var ww = userData.wordbook.find(function(x){return x.jp===correct;});
     if (ww) { ww.wrong = (ww.wrong||0)+1; ww.total = (ww.total||0)+1; ww.streak = 0; }
+    // 今日のテスト単語を記録
+    if (!userData.todayQuiz) userData.todayQuiz = {words:[], correct:0, total:0, date:''};
+    var today3 = new Date(); var todayStr3 = (today3.getMonth()+1)+'/'+today3.getDate();
+    if (userData.todayQuiz.date !== todayStr3) userData.todayQuiz = {words:[], correct:0, total:0, date:todayStr3};
+    if (!userData.todayQuiz.words.includes(currentWord.en)) userData.todayQuiz.words.push(currentWord.en);
+    userData.todayQuiz.total++;
   }
   // テスト履歴に記録
   if (!userData.quizHistory) userData.quizHistory = [];
@@ -988,6 +1002,13 @@ function checkBossAnswer() {
     var wb = userData.wordbook.find(function(x){return x.en===w.en;});
     if (wb) { wb.streak = (wb.streak||0)+1; if(wb.mastery<3) wb.mastery++; }
     userData.totalCorrect = (userData.totalCorrect||0)+1;
+    // 今日のテスト単語を記録
+    if (!userData.todayQuiz) userData.todayQuiz = {words:[], correct:0, total:0, date:''};
+    var today2 = new Date(); var todayStr = (today2.getMonth()+1)+'/'+today2.getDate();
+    if (userData.todayQuiz.date !== todayStr) userData.todayQuiz = {words:[], correct:0, total:0, date:todayStr};
+    if (!userData.todayQuiz.words.includes(currentWord.en)) userData.todayQuiz.words.push(currentWord.en);
+    userData.todayQuiz.correct++;
+    userData.todayQuiz.total++;
     speak(w.en);
   } else {
     resultEl.innerHTML = '<div class="boss-result-lose">❌ 不正解… 正解は ' + correct.toUpperCase() + '</div>';
@@ -1014,7 +1035,7 @@ function endBoss() {
   document.getElementById('result-emoji').textContent = perfect ? '🏆' : bossCorrect >= 2 ? '🎉' : '💪';
   document.getElementById('result-score').textContent = bossCorrect + '/' + bossWords.length;
   document.getElementById('result-msg').textContent = perfect ? 'ボス完全撃破！🔥' : bossCorrect >= 2 ? 'ボスにダメージ！' : 'また挑戦してみよう！';
-  document.getElementById('coin-reward').textContent = '🪙 +' + reward + 'コイン ゲット！';
+  document.getElementById('coin-reward').textContent = '🪙 +' + reward + '円 ゲット！';
 }
 
 // 分析
